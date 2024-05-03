@@ -1,0 +1,72 @@
+from pandas import DataFrame from random import randint import random
+lst_tmp = [] lst_oxy = [] lst_hrt = []
+
+
+for i in range(0, 1000): tmp = randint(96,105) oxy = randint(85,99) hrt = randint(60,130)
+
+
+lst_tmp.append(tmp)
+lst_oxy.append(oxy) lst_hrt.append(hrt)
+ 
+import numpy
+
+
+
+x = lst_tmp y = lst_oxy z = lst_hrt
+A = numpy.array((x, y, z), dtype=float) A
+AT= A.T
+
+print(AT)
+
+df = DataFrame (AT,columns = ['temp','oxygen','heart beat']) df
+i=0 j=0 k=0
+counter=0 output=[]
+
+
+while counter < 1000:
+
+if lst_tmp[i]>int(99):
+
+if lst_oxy[j]<int(90): output.append("possible heart risk") #break
+ 
+else:
+
+if lst_hrt[k]>int(90): output.append("no possible risk") #break
+else:
+
+output.append("no possible risk") #break
+else:
+
+if lst_oxy[j]<int(90):
+
+if lst_hrt[k]>int(90): output.append("possible risk") #break
+else:
+
+output.append("mild symptoms to heart risk") #break
+else:
+
+if lst_hrt[k]>int(90):
+
+output.append("no possible risk") #break
+else:
+
+output.append("no possible risk") #break
+i+=1
+ 
+j+=1 k+=1
+counter+=1 print(output)
+df1 = DataFrame (output,columns = ['prediction']) df1
+import pandas as pd
+
+result = pd.concat([df, df1], axis=1) result
+result.to_csv("result1.csv") import pandas as pd
+from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
+from sklearn.model_selection import train_test_split # Import train_test_split function
+
+from sklearn import metrics #Import scikit-learn metrics module for accuracy calculation
+df=pd.read_csv("result1.csv") y=df["prediction"] X=df.drop("prediction",axis=1) X=X.drop("Unnamed: 0",axis=1) X.head()
+from sklearn.model_selection import train_test_split
+ 
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3,random_state=4 2,stratify=y)
+from sklearn.preprocessing import MinMaxScaler scaler=MinMaxScaler() X_train=scaler.fit_transform(X_train) X_test=scaler.transform(X_test)
+from sklearn.neighbors import KNeighborsClassifier model=KNeighborsClassifier(n_neighbors=2) model.fit(X_train,y_train) model.score(X_test,y_test)
