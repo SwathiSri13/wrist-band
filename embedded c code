@@ -1,0 +1,34 @@
+#define BLYNK_TEMPLATE_ID "TMPL31NmC5HVK"
+#define BLYNK_TEMPLATE_NAME "Temperature sensor"
+#define BLYNK_AUTH_TOKEN "JRz9LYhuyPC6RYfy5VgZYDH7gQi_wOFi" #include <WiFi.h>
+#include <BlynkSimpleEsp32.h> #include <OneWire.h>
+#include <DallasTemperature.h> char ssid[] = "John";
+char pass[] = "harsha13";
+
+char auth[] = BLYNK_AUTH_TOKEN; #define ONE_WIRE_BUS 15
+#define PULSE_SENSOR_PIN 13 // GPIO13 OneWire oneWire(ONE_WIRE_BUS); DallasTemperature sensors(&oneWire);
+ 
+volatile int pulseCount = 0;
+
+volatile unsigned long lastBeatTime = 0; volatile int BPM = 0;
+BlynkTimer timer; void setup() { Serial.begin(115200);
+Blynk.begin(auth, ssid, pass); sensors.begin();
+pinMode (PULSE_SENSOR_PIN, INPUT_PULLUP);
+
+attachInterrupt(digitalPinToInterrupt(PULSE_SENSOR_PIN), pulseCounter, RISING);timer.setInterval(1000L, sendData);
+}
+
+void loop() { Blynk.run();
+timer.run();
+
+}
+
+void sendData() { sensors.requestTemperatures(); Blynk.virtualWrite(V3, temperatureC); BPM = (int)((pulseCount / 2.0) * 60.0); pulseCount = 0; Blynk.virtualWrite(V13, BPM);
+} void pulseCounter() {
+ 
+if ((millis() - lastBeatTime) > 250)
+
+{pulseCount++; lastBeatTime = millis();
+}
+
+}
